@@ -1,38 +1,63 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# General OS and system files
+.DS_Store
+Thumbs.db
+packages/*/node_modules/
+node_modules/
+backend/rustproject/target/
+package-lock.json
+# Node.js and Turborepo
+node_modules        # Ignore all node_modules folders
+.turbo/               # Ignore all .turbo folders
+dist/                 # Ignore all dist folders
+.next/                # Ignore all .next folders
+!.next/cache/**       # Allow caching if required for builds
+package-lock.json     # Optional: Exclude lock files for npm if using yarn or pnpm
 
-# Dependencies
-node_modules
-.pnp
-.pnp.js
+# Go project
+bin/                  # Ignore all bin directories
+*.exe                 # Ignore Go executables
+*.out                 # Ignore Go output binaries
+*.log                 # Ignore Go logs
+*.so                  # Ignore shared objects
+*.dll                 # Ignore Go DLLs
+*.test                # Ignore Go test binaries
+go.sum                # Ignore Go module checksum file
 
-# Local env files
-.env
+# Rust project
+/target/              # Ignore all Rust target folders
+**/*.rs.bk            # Ignore Rust backup files
+Cargo.lock            # Optional: Exclude Cargo.lock for libraries
+**/*.dSYM             # Ignore macOS debug files
+**/*.log              # Ignore Rust logs
+**/debug.log          # Ignore debug logs from Rust
+
+# IDEs and editors
+.vscode/              # Ignore all VSCode configurations
+.idea/                # Ignore all JetBrains IDE configurations
+*.swp                 # Ignore Vim swap files
+*.swo
+*.bak                 # Ignore backup files
+*.tmp                 # Ignore temporary files
+*~                    # Ignore other temporary files
+
+# Environmental variables
+.env                  # Ignore all .env files
 .env.local
 .env.development.local
-.env.test.local
 .env.production.local
+.env.test.local
 
-# Testing
-coverage
+# Build artifacts
+build/                # Ignore generic build artifacts
+.cache/               # Ignore any generic cache folders
 
-# Turbo
-.turbo
-
-# Vercel
-.vercel
-
-# Build Outputs
+# Specific project outputs
+bin/
+dist/
+.turbo/
 .next/
-out/
-build
-dist
 
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Misc
-.DS_Store
-*.pem
+# Optional: Ignore custom debug or temporary files
+*.log
+*.tmp
+*.cache

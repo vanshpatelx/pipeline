@@ -18,6 +18,9 @@
   "packageManager": "npm@11.0.0",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "backend/*",
+    "backend/rustproject",
+    "backend/goproject"
   ]
 }

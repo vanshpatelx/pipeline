@@ -1,0 +1,7 @@
+{
+  "name": "rustproject",
+  "scripts": {
+    "build": "cargo build --release",
+    "dev": "cargo run"
+  }
+}
