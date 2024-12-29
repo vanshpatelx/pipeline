@@ -1,0 +1,8 @@
+POSTGRES_USER=postgres_user_2
+POSTGRES_PASS=postgres_pass_2
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5433
+POSTGRES_DB=postgres_db_2
+REDIS_HOST=localhost
+REDIS_PORT=6380
+RABBITMQ_URL=amqp://admin:admin@localhost:5672

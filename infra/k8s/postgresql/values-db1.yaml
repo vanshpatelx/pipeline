@@ -1,0 +1,9 @@
+postgres:
+  user: "postgres1"
+  password: "postgres1_password"
+  db: "postgres1_db"
+  port: 5432
+  storage: 8Gi
+  secretName: "postgres1-secret"
+  pvcName: "postgres1-pvc"
+  deploymentName: "postgresql1"

@@ -1,0 +1,9 @@
+postgres:
+  user: "postgres2"
+  password: "postgres2_password"
+  db: "postgres2_db"
+  port: 5433
+  storage: 8Gi
+  secretName: "postgres2-secret"
+  pvcName: "postgres2-pvc"
+  deploymentName: "postgresql2"

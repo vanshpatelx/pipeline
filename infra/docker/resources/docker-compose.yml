@@ -1,0 +1,108 @@
+version: '3.9'
+services:
+  # Cassandra Database
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandraPipeline
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_NUM_TOKENS=256
+    volumes:
+      - ./configs/cassandra:/etc/cassandradocker ps -a | grep cassandra
+    networks:
+      - abcd
+
+  # PostgreSQL Database 1
+  postgres-1:
+    image: postgres:15
+    container_name: postgres-1Pipeline
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres_user_1
+      - POSTGRES_PASSWORD=postgres_pass_1
+      - POSTGRES_DB=postgres_db_1
+    volumes:
+      - ./configs/postgres-1:/etc/postgresql
+      - postgres1-data:/var/lib/postgresql/data
+    networks:
+      - abcd
+
+  # PostgreSQL Database 2
+  postgres-2:
+    image: postgres:15
+    container_name: postgres-2Pipeline
+    ports: 
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres_user_2
+      - POSTGRES_PASSWORD=postgres_pass_2
+      - POSTGRES_DB=postgres_db_2
+    volumes:
+      - ./configs/postgres-2:/etc/postgresql
+      - postgres2-data:/var/lib/postgresql/data
+    networks:
+      - abcd
+
+  # Redis Cache 1
+  redis-1:
+    image: redis:7
+    container_name: redis-1Pipeline
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./configs/redis-1/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks:
+      - abcd
+
+  # Redis Cache 2
+  redis-2:
+    image: redis:7
+    container_name: redis-2Pipeline
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./configs/redis-2/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks:
+      - abcd
+
+  # Redis Cache 3
+  redis-3:
+    image: redis:7
+    container_name: redis-3Pipeline
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./configs/redis-3/redis.conf:/usr/local/etc/redis/redis.conf
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks:
+      - abcd
+
+  # RabbitMQ Pub-Sub
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmqPipeline
+    ports:
+      - "15672:15672" # RabbitMQ Management Console
+      - "5672:5672"   # AMQP Port
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - ./configs/rabbitmq:/etc/rabbitmq
+    networks:
+      - abcd
+
+
+volumes:
+  postgres1-data:
+  postgres2-data:
+
+networks:
+  abcd:
+    driver: bridge
+

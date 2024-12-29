@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.postgres.secretName }}
+type: Opaque
+data:
+  POSTGRES_PASSWORD: {{ .Values.postgres.password | b64enc }}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.postgres.pvcName }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.postgres.storage }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/postgresql/{{ .Values.postgres.pvcName }}
+  persistentVolumeReclaimPolicy: Retain
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.pvcName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage }}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.postgres.deploymentName }}
+spec:
+  serviceName: {{ .Values.postgres.deploymentName }}-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.postgres.deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.postgres.deploymentName }}
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:14
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.user }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.secretName }}
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.db }}
+          ports:
+            - containerPort: {{ .Values.postgres.port }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: {{ .Values.postgres.pvcName }}-storage
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.postgres.pvcName }}-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.postgres.deploymentName }}-headless
+spec:
+  clusterIP: None  # This makes the service headless
+  selector:
+    app: {{ .Values.postgres.deploymentName }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.postgres.port }}
+      targetPort: 5432
